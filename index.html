@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noise Removal from Audio using Fourier Transform</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Digital Signal Processing Lab</p>
+        <h1>Noise Removal from Audio using Fourier Transform</h1>
+        <p class="hero-copy">
+          Upload an audio file, inspect its waveform and frequency content, then reduce noise by filtering Fourier coefficients and reconstructing a cleaner signal directly in the browser.
+        </p>
+      </div>
+      <div class="hero-card">
+        <div class="metric">
+          <span class="metric-label">Format</span>
+          <span class="metric-value" id="fileTypeLabel">No file loaded</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Duration</span>
+          <span class="metric-value" id="durationLabel">0.00 s</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Removed</span>
+          <span class="metric-value" id="removedLabel">0%</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid-layout">
+      <section class="panel panel-upload">
+        <div class="section-title">
+          <h2>1. Upload Audio</h2>
+          <p>Select a `.wav` or `.mp3` file to begin analysis.</p>
+        </div>
+
+        <label class="upload-box" for="audioFile">
+          <input type="file" id="audioFile" accept=".wav,.mp3,audio/wav,audio/mpeg">
+          <span class="upload-title">Choose audio file</span>
+          <span class="upload-subtitle">Drag and drop is supported by your browser file picker.</span>
+        </label>
+
+        <div class="button-row">
+          <button id="loadSampleBtn" class="ghost" type="button">Load Sample Audio</button>
+          <button id="playOriginalBtn" disabled>Play Original</button>
+          <button id="pauseOriginalBtn" class="ghost" disabled>Pause</button>
+        </div>
+
+        <audio id="originalAudio" controls></audio>
+        <p class="sample-note">Built-in sample: <a href="sample-audio.wav" target="_blank">sample-audio.wav</a></p>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>2. Original Signal Graph</h2>
+          <p>Time-domain waveform of the uploaded signal.</p>
+        </div>
+        <canvas id="waveformChart" class="chart" width="900" height="320"></canvas>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>3. Frequency Spectrum</h2>
+          <p>Magnitude vs frequency after applying the Fourier Transform.</p>
+        </div>
+        <canvas id="spectrumChart" class="chart" width="900" height="320"></canvas>
+      </section>
+
+      <section class="panel controls-panel">
+        <div class="section-title">
+          <h2>4. Noise Filter Controls</h2>
+          <p>Adjust filtering strength and choose a preset response.</p>
+        </div>
+
+        <div class="control-group">
+          <label for="thresholdSlider">Noise Threshold</label>
+          <input type="range" id="thresholdSlider" min="0" max="100" value="12">
+          <div class="control-meta">
+            <span id="thresholdValue">12%</span>
+            <span>Removes small-magnitude frequencies below the selected level.</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="filterPreset">Filter Preset</label>
+          <select id="filterPreset">
+            <option value="magnitude">Magnitude Noise Gate</option>
+            <option value="lowpass">Low-pass Filter</option>
+            <option value="highpass">High-pass Filter</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button id="applyFilterBtn" class="accent" disabled>Apply Noise Removal</button>
+        </div>
+
+        <div class="status-card">
+          <h3>How it works</h3>
+          <p>
+            Fourier Transform separates the audio into frequency components. Filtering removes unwanted coefficients, and the Inverse Fourier Transform converts the modified spectrum back to a cleaner time signal.
+          </p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>5. Cleaned Output</h2>
+          <p>Listen to the reconstructed audio after noise reduction.</p>
+        </div>
+
+        <div class="button-row">
+          <button id="playCleanedBtn" disabled>Play Cleaned</button>
+          <button id="pauseCleanedBtn" class="ghost" disabled>Pause</button>
+        </div>
+
+        <audio id="cleanedAudio" controls></audio>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>Before vs After Comparison</h2>
+          <p>Overlay of original and cleaned waveforms.</p>
+        </div>
+        <canvas id="comparisonChart" class="chart" width="900" height="320"></canvas>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="section-title">
+          <h2>Bonus: Spectrogram</h2>
+          <p>Short-time frequency view of the original audio.</p>
+        </div>
+        <canvas id="spectrogramChart" class="chart" width="1200" height="320"></canvas>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
